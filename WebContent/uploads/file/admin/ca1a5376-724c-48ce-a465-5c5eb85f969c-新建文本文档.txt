@@ -1,0 +1,635 @@
+1 servlet jsp.png
+2 Servlet
+2.1 Servlet
+2.1.1 什么是servlet容器
+2.1.2 Servlet生命周期，包含以下四个阶段。
+2.1.3 Session的主要几个方法的区别。
+2.1.4 为什么在session少放对象。
+2.1.5 Cookie 与session 的区别是
+2.1.6 描述Cookie和Session的作用，区别和各自的应用范围，Session工作原理。
+2.1.7 session缓存的作用。
+2.1.8 Request和Session的取值区别。
+2.1.9 四种会话跟踪技术作用域
+2.1.10 HTML和Servlet的异同
+2.2 请求响应
+2.2.1 你如何读取一个请求的头信息？
+2.2.2 Get和Post的区别。
+2.2.3 Jsp的重定向和转发的流程有什么区别。
+2.2.4 获取页面的元素的值有几种方式，分别说一下。
+2.2.5 怎么判断用户请求时是第一次，如果客户端和服务端断开怎么连到上一次操作。
+2.2.6 Jsp页面跳转。
+2.2.7 forward和redirect的区别。
+2.2.8 什么情况下调用doGet()和doPost()？
+2.2.9 Servlet中如何获取用户提交的查询参数或表单数据？
+2.2.10 Request对象的主要方法
+2.3 过滤器监听器
+2.3.1 Servlet和过滤器的区别。
+2.3.2 拦截器(Filter)怎么执行的。
+2.3.3 过滤器有哪些作用和用法？
+2.3.4 监听器有哪些作用和用法？
+2.3.5 什么是过滤器、拦截器、监听器，它们的顺序是怎样的？
+2.3.6 过滤器和拦截器的区别
+3 JSP
+3.1 JSP
+3.1.1 获取页面的元素的值有几种方式，分别说一下
+3.1.2 和静态 HTML 相比，JSP 的优势是什么？
+3.1.3 jsp与servlet如何相互传值。
+3.1.4 jsp与servlet联系与区别 。
+3.1.5 Jsp和Servlet的区别。
+3.1.6 什么是 JSP 表达式？
+3.1.7 指令标签的类型是什么？
+3.1.8 什么是 JSP 字面值？
+3.1.9 Jsp的九大内置对象，三大指令，七大动作的具体功能
+3.1.10 Jsp页面把一个元素隐藏的方法
+3.1.11 Jsp如何处理json
+3.1.12 include指令标签
+3.1.13 动态include的优点和不足
+3.1.14 如何实现JSP或Servlet的单线程模式？
+3.1.15 Jsp可以操作窗口吗？
+3.1.16 Jsp的执行原理
+3.1.17 我们在web应用开发过程中经常遇到输出某种编码的字符，如ISO-8859-1，如何输出一个某种编码的字符串。
+3.1.18 如何利用 JSP 上传一个文件？
+3.1.19 什么是页面指令是用来防止JSP页面自动创建一个会话？
+3.2 EL表达式
+3.2.1 EL表达式的语法是什么？
+3.2.2 为什么要用EL表达式，有什么好处？
+3.2.3 我们如何禁用 EL？
+3.2.4 表达式语言（EL表达式）支持哪些运算符？
+3.3 Jstl
+3.3.1 什么是 JSTL？
+3.3.2 使用标签库有什么好处？
+3.3.3 常用的 JSTL 标签
+Servlet
+Servlet
+什么是servlet容器
+用来管理servlet生命周期的应用程序如(tomcat)。
+
+
+
+Servlet生命周期，包含以下四个阶段。
+1 装载Servlet类并创建实例阶段，该阶段在默认情况下发生在客户端第一次向服务器端发送请求； 
+2 初始化阶段，servlet实例创建完成后，调用init(ServletConfig config)方法对该实例完成初始化工作； 
+3 服务阶段，根据Http请求方式，调用service()方法中对应的doGet()或doPost()方法，并将响应结果返回； 
+4 销毁阶段，当服务器关闭或Servlet容器重新装载Servlet类等情况时，调用destroy()方法释放Servlet所占用的资源。
+
+ 
+
+Session的主要几个方法的区别。
+Session不能通过new创建，需要通过调用getSession()或者getSession(true)方法创建，getSession()是自动创建session。
+
+getSession(true)是强制创建session。setAttribute()方法可以用于传值，getAttribute()可以用于取值。
+
+销毁session调用invalidate方法。
+
+通过setMaxInactiveInterval()可以设定session的生存时间(web.xml可以设置session的生存时间)
+
+ 
+
+为什么在session少放对象。
+因为session底层是由cookie实现的，当客户端的cookie被禁用后，session也会失效，且应尽量少向session中保存信息，session的数据保存在服务器端，
+
+当有大量session时，会降低服务器的性能。
+
+ 
+
+Cookie 与session 的区别是
+session为短对话，Cookie可以设置任意时间的有效期。
+
+
+
+描述Cookie和Session的作用，区别和各自的应用范围，Session工作原理。
+Cookie:主要用在保存客户端，其值在客户端与服务端之间传送，不安全，存储的数据量有限。
+
+Session:保存在服务端，每一个session在服务端有一个sessionID作一个标识。存储的数据量大，安全性高。占用服务端的内存资源。
+
+ 
+
+session缓存的作用。
+1，减少数据库的访问频率。
+
+2，保证缓存中的对象和数据库中的相关记录保持同步。
+
+ 
+
+Request和Session的取值区别。
+Request可以通过getAttribute()方法直接取值，也可通过getParameter()取值，
+
+Session需要通过request.getSession().getAttribute()才能取值，
+
+Request是针对一次请求，Session是针对整个会话。
+
+ 
+
+四种会话跟踪技术作用域
+（1）page：一个页面
+
+（2）request：：一次请求
+
+（3）session：一次会话
+
+（4）application：服务器从启动到停止。
+
+ 
+
+HTML和Servlet的异同
+不同： Html是静态，servlet是动态 html页面由服务器直接返回， servlet是用来处理客户请求，
+
+并返回html页面 ,Servlet需要服务器调用servlet方法生成动态html页面，且需要在web.xml中配置url路径。
+
+请求响应
+ 
+
+你如何读取一个请求的头信息？
+使用HttpServletRequest 的 getHeaderNames() 方法来读取 HTTP 头信息。该方法返回一个枚举，包含与当前请求相关的头信息。
+
+ 
+
+Get和Post的区别。
+在页面提交数据时，get的数据大小有限制4k，post没有限制，get请求提交的数据会在地址栏显示，post不显示，所以post比get安全.
+
+ 
+
+ 
+
+Jsp的重定向和转发的流程有什么区别。
+重定向是客户端行为，转发是服务器端行为
+
+重定向时服务器产生两次请求，转发产生一次请求，重定向时可以转发到项目以外的任何网址，转发只能在当前项目里转发
+
+重定向会导致request对象信息丢失。转发则不会
+
+转发的url不会变,request.getRequestDispatch().forward()
+
+重定向的url会改变,response.getRedirect().sendRedirect();
+
+ 
+
+获取页面的元素的值有几种方式，分别说一下。
+request.getParameter() 返回客户端的请求参数的值
+
+request.getParameterNames() 返回所有可用属性名的枚举
+
+request.getParameterValues() 返回包含参数的所有值的数组
+
+ 
+
+怎么判断用户请求时是第一次，如果客户端和服务端断开怎么连到上一次操作。
+通过session中的isNew()可以判断是否是新用户,可以用cookie来保存信息到客户端,可以连接到上一次操作。
+
+ 
+
+Jsp页面跳转。
+Jsp页面跳转有两种方式，forward和redirect（转发和重定向）
+
+ 
+
+forward和redirect的区别。
+转发与重定向
+
+（1）从地址栏显示来说 
+
+forward是服务器请求资源,服务器直接访问目标地址的URL,把那个URL的响应内容读取过来,然后把这些内容再发给浏览器.浏览器根本不知道服务器发送
+
+的内容从哪里来的,所以它的地址栏还是原来的地址.redirect是服务端根据逻辑,发送一个状态码,告诉浏览器重新去请求那个地址.所以地址栏显示的是
+
+新的URL.
+
+（2）从数据共享来说 
+
+forward:转发页面和转发到的页面可以共享request里面的数据.
+
+redirect:不能共享数据.
+
+（3）从运用地方来说 
+
+forward:一般用于用户登陆的时候,根据角色转发到相应的模块.
+
+redirect:一般用于用户注销登陆时返回主页面和跳转到其它的网站等.
+
+（4）从效率来说 
+
+forward:高.
+
+redirect:低.
+
+ 
+
+什么情况下调用doGet()和doPost()？
+Jsp页面中的form标签里的method属性为get时调用doGet()，为post时调用doPost()。
+
+ 
+
+ 
+
+Servlet中如何获取用户提交的查询参数或表单数据？
+可以通过请求对象（HttpServletRequest）的getParameter()方法通过参数名获得参数值。
+
+如果有包含多个值的参数（例如复选框），可以通过请求对象的getParameterValues()方法获得。
+
+当然也可以通过请求对象的getParameterMap()获得一个参数名和参数值的映射（Map）。
+
+ 
+
+Request对象的主要方法
+setAttribute(String name,Object)：设置名字为name的request的参数值
+getAttribute(String name)：返回由name指定的属性值
+getAttributeNames()：返回request对象所有属性的名字集合，结果是一个枚举的实例
+getCookies()：返回客户端的所有Cookie对象，结果是一个Cookie数组
+getCharacterEncoding()：返回请求中的字符编码方式
+getContentLength()：返回请求的Body的长度
+getHeader(String name)：获得HTTP协议定义的文件头信息
+getHeaders(String name)：返回指定名字的request Header的所有值，结果是一个枚举的实例
+getHeaderNames()：返回所以request Header的名字，结果是一个枚举的实例
+getInputStream()：返回请求的输入流，用于获得请求中的数据
+getMethod()：获得客户端向服务器端传送数据的方法
+getParameter(String name)：获得客户端传送给服务器端的有name指定的参数值
+getParameterNames()：获得客户端传送给服务器端的所有参数的名字，结果是一个枚举的实例
+getParameterValues(String name)：获得有name指定的参数的所有值
+getProtocol()：获取客户端向服务器端传送数据所依据的协议名称
+getQueryString()：获得查询字符串
+getRequestURI()：获取发出请求字符串的客户端地址
+getRemoteAddr()：获取客户端的IP地址
+getRemoteHost()：获取客户端的名字
+getSession([Boolean create])：返回和请求相关Session
+getServerName()：获取服务器的名字
+getServletPath()：获取客户端所请求的脚本文件的路径
+getServerPort()：获取服务器的端口号
+removeAttribute(String name)：删除请求中的一个属性
+
+ 
+
+过滤器监听器
+Servlet和过滤器的区别。
+Servlet：是用来处理客户端发送的请求，然后生成响应并将其传给server服务器，
+
+最后服务器将响应返回给客户端
+
+过滤器：是用于 对servlet容器调用servlet的过程进行拦截
+
+可以在servlet进行响应处理前后做一些特殊的处理,譬如权限,日志,编码等
+
+ 
+
+拦截器(Filter)怎么执行的。
+首先初始化过滤器，然后服务器组织过滤器链，所有的请求都必须需要先通过过滤器链,
+
+过滤器链是一个栈，遵循先进后出的原则 ，所有的请求需要经过一个一个的过滤器，
+
+执行顺序要根据web.xml里配置的<filter-mapping>的位置前后执行，每个过滤器之间通过chain.doFilter连接，
+
+最后抵达真正请求的资源，执行完后再从过滤器链退出。
+
+ 
+
+过滤器有哪些作用和用法？
+Java Web开发中的过滤器（filter）是从Servlet 2.3规范开始增加的功能，并在Servlet 2.4规范中得到增强。
+
+对Web应用来说，过滤器是一个驻留在服务器端的Web组件，它可以截取客户端和服务器之间的请求与响应信息，并对这些信息进行过滤。
+
+当Web容器接受到一个对资源的请求时，它将判断是否有过滤器与这个资源相关联。如果有，那么容器将把请求交给过滤器进行处理。
+
+在过滤器中，你可以改变请求的内容，或者重新设置请求的报头信息，然后再将请求发送给目标资源。
+
+当目标资源对请求作出响应时候，容器同样会将响应先转发给过滤器，在过滤器中你可以对响应的内容进行转换，然后再将响应发送到客户端。
+
+ 
+
+监听器有哪些作用和用法？
+Java Web开发中的监听器（listener）就是application、session、request三个对象创建、销毁或者往其中添加修改删除属性时自动执行代码的功能组件，如下所示：
+
+①ServletContextListener：对Servlet上下文的创建和销毁进行监听。
+
+②ServletContextAttributeListener：监听Servlet上下文属性的添加、删除和替换。
+
+③HttpSessionListener：对Session的创建和销毁进行监听。
+
+补充：session的销毁有两种情况：1). session超时（可以在web.xml中通过<session-config>/<session-timeout>标签配置超时时间）；2). 通过调用session对象的invalidate()方法使session失效。
+
+④HttpSessionAttributeListener：对Session对象中属性的添加、删除和替换进行监听。
+
+⑤ServletRequestListener：对请求对象的初始化和销毁进行监听。
+
+⑥ServletRequestAttributeListener：对请求对象属性的添加、删除和替换进行监听。
+
+ 
+
+什么是过滤器、拦截器、监听器，它们的顺序是怎样的？
+监听器是容器启动和销毁时触发的动作，过滤器是进入servlet请求之前触发的工作，拦截器是像springmvc框架实现的内部的请求拦截器。
+
+顺序：监听器>过滤器>拦截器。
+
+
+
+过滤器和拦截器的区别
+1、拦截器是基于java的反射机制的，而过滤器是基于函数回调
+
+2、过滤器依赖于servlet容器，而拦截器不依赖于servlet容器
+
+3、拦截器只能对action请求起作用，而过滤器则可以对几乎所有的请求起作用
+
+4、拦截器可以访问action上下文、值栈里的对象，而过滤器不能
+
+5、在action的生命周期中，拦截器可以多次被调用，而过滤器只在容器初始化时调用一次
+
+拦截器 ：是在面向切面编程的就是在你的service或者一个方法，前调用一个方法，或者在方法后调用一个方法比如动态代理就是拦截器的简单实现，在你调用方法前打印出字符串（或者做其它业务逻辑的操作），也可以在你调用方法后打印出字符串，甚至在你抛出异常的时候做业务逻辑的操作。
+
+过滤器：是在JavaWeb中，你传入的request,response提前过滤掉一些信息，或者提前设置一些参数，然后再传入servlet或者struts的action进行业务逻辑，比如过滤掉非法url（不是login.do的地址请求，如果用户没有登陆都过滤掉）,或者在传入servlet或者struts的action前统一设置字符集，或者去除掉一些非法字符.
+
+JSP
+ 
+
+JSP
+获取页面的元素的值有几种方式，分别说一下
+request.getParameter() 返回客户端的请求参数的值
+
+request.getParameterNames() 返回所有可用属性名的枚举
+
+request.getParameterValues() 返回包含参数的所有值的数组
+
+ 
+
+和静态 HTML 相比，JSP 的优势是什么？
+常规的 HTML 不能包含动态信息。
+
+ 
+
+jsp与servlet如何相互传值。
+Jsp -> servlet
+
+     1 form 表单提交  控件传
+
+     2 url?传值
+
+     3 作用域requeset(转发)  session application
+
+servlet -> jsp
+
+      作用域requeset(转发)  session application
+
+ 
+
+jsp与servlet联系与区别 。
+1 jsp在本质上就是servlet,编译后就是servlet
+
+2 jsp擅长页面显示，servlet主要做业务控制 jsp(v)+servlet(c)+javabean(m)
+
+3 jsp是在html中嵌入java代码，servlet在java代码中输出html代码
+
+ 
+
+Jsp和Servlet的区别。
+Jsp的可读性强，容易看得懂，并且Jsp在最后会编译成Servlet,
+
+servlet容易调试,但是生成html页面工作量大。
+
+ 
+
+什么是 JSP 表达式？
+一个 JSP 表达式元素包含一个被求值的脚本语言表达式，转换成一个字符串，并插入到表达式在 JSP 文件中出现的位置。
+
+根据 Java 语言规范，表达式元素可以包含任何有效地表达式，但是你不能使用一个分号来结束一个表达式。
+
+他的语法是：
+
+<%= expression %>
+ 
+
+ 
+
+指令标签的类型是什么？
+指令标签的类型如下：
+
+<%@ page ... %> : 定义 page-dependent 属性，例如脚本语言、错误页面、和缓冲需求。
+
+<%@ include ... %> : 在翻译阶段包含一个文件。
+
+<%@ taglib ... %> : 声明一个标签库，包含在页面中使用的自定义动作。
+
+ 
+
+ 
+
+什么是 JSP 字面值？
+字面值是一些值，例如一个数字或者一个文本字符串，编写程序代码的一部分。JSP 表达式语言定义以下字面值：
+
+       Boolean：真和假
+
+       Integer：同 Java
+
+       Floating point：同 Java
+
+       String：使用单引号和双引号；" is escaped as \", ' is escaped as \', and \ is escaped as \
+
+       Null:空
+
+ 
+
+Jsp的九大内置对象，三大指令，七大动作的具体功能
+JSP九大内置对象:
+
+pageContext ：只对当前jsp页面有效，里面封装了基本的request和session的对象
+
+Request ：对当前请求进行封装
+
+Session ：浏览器会话对象，浏览器范围内有效
+
+Application ：应用程序对象，对整个web工程都有效
+
+Out ：页面打印对象，在jsp页面打印字符串
+
+Response ：返回服务器端信息给用户
+
+Config ：单个servlet的配置对象，相当于servletConfig对象
+
+Page ：当前页面对象，也就是this
+
+Exception ：错误页面的exception对象，如果指定的是错误页面，这个就是异常对象
+
+三大指令：
+
+Page ：指令是针对当前页面的指令
+
+Include ：用于指定如何包含另一个页面
+
+Taglib ：用于定义和指定自定义标签
+
+七大动作：
+
+Forward，执行页面跳转，将请求的处理转发到另一个页面
+
+Param ：用于传递参数
+
+Include ：用于动态引入一个jsp页面
+
+Plugin ：用于下载javaBean或applet到客户端执行
+
+useBean ：寻找或实例化一个 JavaBean
+
+setProperty ：修改javaBean实例的属性值
+
+getProperty ：获取javaBean实例的属性值
+
+
+
+Jsp页面把一个元素隐藏的方法
+通过使用属性hidden可以将元素隐藏
+
+ 
+
+Jsp如何处理json
+在 jsp 中处理 JSON，通常需要配套使用 JQuery 控件，并且导入一些 Common jar 包。使用 JQuery 控件是因为它能有效的解析并且展示JSON 数据，
+
+导入Common 则是因为 Java 中的对象并不是纯粹的数据，需要通过这些 Jar 包的处理使之转化成真实数据。
+
+ 
+
+ 
+
+include指令标签
+主要有两个方面的不同;
+
+　　1.执行时间上:
+
+< %@ include file=”relativeURI”%> 是在翻译阶段执行
+
+< jsp:include page=”relativeURI” flush=”true” /> 在请求处理阶段执行.
+
+　　2.引入内容的不同:
+
+< %@ include file=”relativeURI”%>
+
+　　引入静态文本(html,jsp),在JSP页面被转化成servlet之前和它融和到一起.
+
+< jsp:include page=”relativeURI” flush=”true” />引入执行页面或servlet所生成的应答文本.
+
+ 
+
+动态include的优点和不足
+优点：
+
+1：引入和同步一个动态的页面，使jsp页面更具灵活性
+
+2：能和不同页面之间进行信息的交互和快捷的实现方式。
+
+3：改变了原始的所有页面编码都放在一个jsp上，使不同的功能分别写在不同页里，通过动态include方式引用到页面，更易于编码，更易于管理。
+
+不足：
+
+动态的引入时需要频繁的变化和页面信息的更新和交互，要占用大量的资源开销。降低页面的访问速度。如果在没必要动态引入的情况下，不要使用动态include
+
+应该注意事项：
+
+1：<jsp:include>动作的flush属性必须要定义，不定义会出现转换错误。而且设置的flush必须要为true
+
+2：在<jsp:include>动作中指定的页面必须是同一web应用程序的一部分。如果引入的是非同一web应用的页面将导致请求时错误。
+
+ 
+
+ 
+
+如何实现JSP或Servlet的单线程模式？
+对于JSP页面，可以通过page指令进行设置。
+
+<%@page isThreadSafe=”false”%>
+
+对于Servlet，可以让自定义的Servlet实现SingleThreadModel标识接口。
+
+说明：如果将JSP或Servlet设置成单线程工作模式，会导致每个请求创建一个Servlet实例，这种实践将导致严重的性能问题（服务器的内存压力很大，还会导致频繁的垃圾回收），所以通常情况下并不会这么做。
+
+Jsp可以操作窗口吗？
+Jsp不能够直接调用窗口，只能先生成打开窗口的js，再由js调用窗口。
+
+ 
+
+Jsp的执行原理
+ 客户端发出请求(request)，Jsp引擎将jsp页面翻译成Servlet的java源文件，在Tomcat(Servlet容器)中将源文件编译成class文件，并加载到内存中执行，
+
+把结果返回(response)给客户端。
+
+ 
+
+我们在web应用开发过程中经常遇到输出某种编码的字符，如ISO-8859-1，如何输出一个某种编码的字符串。
+如将ISO-8859-1输出为GBK格式的字符， 通过new String(byte[] bytes,String charset) 构造器设置编码构造一个新的String（new String("ISO-8859-1","GBK")）;
+
+ 
+
+如何利用 JSP 上传一个文件？
+答：为了上传一个单一的文件你应该使用一个单一的带有属性类型=“file”的 <input .../>标签。为了允许多个文件上传，对名称属性包含多个不同值的输入标签。
+
+上传的文件将被存储在哪里？
+
+答：你可以在你的程序中进行硬编码或者使用外部配置添加该目录名称，比如在 web.xml 中的一个 context-parameter。
+
+ 
+
+什么是页面指令是用来防止JSP页面自动创建一个会话？
+答：<%@ page session="false">
+
+EL表达式
+ 
+
+EL表达式的语法是什么？
+美元符号加大括号--->?${?EL表达式 }
+
+
+
+为什么要用EL表达式，有什么好处？
+在页面中用js脚本和jsp表达式来获取数据显示比较麻烦
+
+   1.需要条件判断
+
+   2.可能需要强转
+
+好处是EL表达式简单易用，默认可访问所有的jsp隐藏对象。
+
+ 
+
+我们如何禁用 EL？
+我们可以使用页面的指令的isELIgnored属性禁用EL。
+
+<%@ page isELIgnored ="true|false" %>
+如果它是true，当它们出现在静态文本或标签属性时，EL表达式被忽略。如果它是false，EL表达式都由容器进行计算。
+
+ 
+
+表达式语言（EL表达式）支持哪些运算符？
+除了.和[]运算符，EL还提供了：
+
+算术运算符：+、-、*、/或div、%或mod
+关系运算符：==或eq、!=或ne、>或gt、>=或ge、<或lt、<=或le
+逻辑运算符：&&或and、||或or、!或not
+条件运算符：${statement? A : B}（跟Java的条件运算符类似）
+empty运算符：检查一个值是否为null或者空（数组长度为0或集合中没有元素也返回true）
+Jstl
+什么是 JSTL？
+JavaServer 页面标准标签库（JSTL）是一个有用的 JSP 标签的集合，里面封装了很多 JSP 应用程序的核心功能。
+
+JSTL支持常见的、结构性的任务，比如迭代和条件、用于操纵 XML 文档的标签、国际化标签，和 SQL 标签。
+
+它还为整合现有的自定义标签和 JSTL标签提供了一个框架。
+
+ 
+
+使用标签库有什么好处？
+使用标签库的好处包括以下几个方面：
+
+分离JSP页面的内容和逻辑，简化了Web开发；
+开发者可以创建自定义标签来封装业务逻辑和显示逻辑；
+标签具有很好的可移植性、可维护性和可重用性；
+避免了对Scriptlet（小脚本）的使用（很多公司的项目开发都不允许在JSP中书写小脚本）
+
+常用的 JSTL 标签
+<c:out >	类似于 java 表达式，但是表达式。
+<c:set >	在某个范围内设置表达式的值。
+<c:remove >	删除一个域变量（从一个特殊的被指定的范围）。
+<c:catch>	抛出任何发生在它的主体中的异常，并且有选择的公开它。
+<c:if>	简单的条件标签，如果提供的条件是 true，则执行标签体的内容。
+<c:choose>	简单的条件标签，用标签和建立一个互斥条件操作的上下文。
+<c:when>	的子标签，如果它的条件为“true”，则运行标签体的内容。
+<c:otherwise >	的子标签，它出现在标签之后，只有当先前的条件结果为“false”运行它。
+<c:import>	检索绝对或相对的 URL 并且显示它的内容到其他的页面，在“var”中的一个 String 类型，或者在“varReader”中的一个 Reader 类型。
+<c:forEach >	基本的迭代标签，接受多种不同的集合类型，支持子集和其他的功能。
+<c:forTokens>	迭代使用分隔符，分隔提供的定界符。
+<c:param>	添加一个参数到包含“import”标签的 URL。
+<c:redirect >	重新定向到的一个新的 URL。
+<c:url>	创建一个带有选项查询参数的 URL。
